@@ -1,0 +1,35 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/library.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity 0.8.19;\n\ncontract LibraryBookSmartContract {\n    address public admin;\n    struct Books {\n        //record ISBN, judul, tahun dibuat, & penulis\n        string isbn;\n        string title;\n        uint year;\n        string author;\n    }\n\n    mapping(string => Books) public Book;\n\n    //add event for logging\n    event addBook(string isbn, string title, uint year, string author);\n    event updateBook(\n        string isbn,\n        string newTitle,\n        uint newYear,\n        string newAuthor\n    );\n    event deleteBook(string isbn);\n\n    //validation isAdmin\n    modifier onlyAdmin() {\n        require(msg.sender == admin, 'Hanya admin yang boleh melakukan');\n        _;\n    }\n\n    constructor() {\n        admin = msg.sender;\n    }\n\n    //Menambah isi buku.\n    function addBooks(\n        string memory _isbn,\n        string memory _title,\n        uint _year,\n        string memory _author\n    ) public onlyAdmin {\n        require(\n            bytes(Book[_isbn].isbn).length == 0,\n            'Buku dengan ISBN tersebut Sudah ada'\n        );\n        Book[_isbn] = Books(_isbn, _title, _year, _author);\n        emit addBook(_isbn, _title, _year, _author);\n    }\n\n    //Edit isi buku berdasarkan ID.\n    function editBooks(\n        string memory _isbn,\n        string memory _newTitle,\n        uint _newYear,\n        string memory _newAuthor\n    ) public onlyAdmin {\n        require(\n            bytes(Book[_isbn].isbn).length != 0,\n            'Buku dengan ISBN tersebut tidak ada'\n        );\n        Book[_isbn].title = _newTitle;\n        Book[_isbn].year = _newYear;\n        Book[_isbn].author = _newAuthor;\n        emit updateBook(_isbn, _newTitle, _newYear, _newAuthor);\n    }\n\n    //Menghapus buku berdasarkan ID.\n    function deleteBooks(string memory _isbn) public onlyAdmin {\n        require(\n            bytes(Book[_isbn].isbn).length != 0,\n            'Buku dengan ISBN tersebut tidak ada'\n        );\n        delete Book[_isbn];\n        emit deleteBook(_isbn);\n    }\n\n    //Melihat isi buku.\n    function getBooksByISBN(\n        string memory _isbn\n    ) public view returns (string memory, string memory, uint, string memory) {\n        require(\n            bytes(Book[_isbn].isbn).length != 0,\n            'Buku dengan ISBN tersebut tidak ada'\n        );\n        return (\n            Book[_isbn].isbn,\n            Book[_isbn].title,\n            Book[_isbn].year,\n            Book[_isbn].author\n        );\n    }\n}\n"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}

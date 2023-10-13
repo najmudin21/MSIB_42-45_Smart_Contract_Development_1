@@ -1,0 +1,12 @@
+Command deploy 
+npx hardhat deploy --tags LibraryBookSmartContract --network hardhat
+npx hardhat node
+
+Command run scripts
+npx hardhat run scripts/addBooks.ts --network localhost
+npx hardhat run scripts/updateBooks.ts --network localhost
+npx hardhat run scripts/deleteBooks.ts --network localhost
+npx hardhat run scripts/getDataBooks.ts --network localhost
+
+Command for testing
+npx hardhat test
